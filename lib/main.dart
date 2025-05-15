@@ -1,104 +1,93 @@
-
+// lib/main.dart
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(PrankCalculatorApp());
+  runApp(PrankCalculator());
 }
 
-class PrankCalculatorApp extends StatelessWidget {
+class PrankCalculator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Prank Calculator',
-      theme: ThemeData.dark(),
-      home: CalculatorScreen(),
-      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: CalculatorHome(),
     );
   }
 }
 
-class CalculatorScreen extends StatefulWidget {
+class CalculatorHome extends StatefulWidget {
   @override
-  _CalculatorScreenState createState() => _CalculatorScreenState();
+  State<CalculatorHome> createState() => _CalculatorHomeState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
-  String display = '';
+class _CalculatorHomeState extends State<CalculatorHome> {
+  String displayText = '0';
 
-  void append(String value) {
+  void onButtonPressed(String value) {
+    // Instead of normal calculator logic, always show "Hello"
     setState(() {
-      display += value;
+      displayText = 'Hello';
     });
   }
 
-  void clear() {
-    setState(() {
-      display = '';
-    });
-  }
-
-  void prankResult() {
-    setState(() {
-      display = 'Hello';
-    });
-  }
-
-  Widget buildButton(String text, VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        minimumSize: Size(70, 70),
-        backgroundColor: Colors.grey[850],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+  Widget buildButton(String text) {
+    return Expanded(
+      child: ElevatedButton(
+        onPressed: () => onButtonPressed(text),
+        child: Text(text, style: TextStyle(fontSize: 24)),
       ),
-      child: Text(text, style: TextStyle(fontSize: 22)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final buttonList = [
-      ['7', '8', '9', '/'],
-      ['4', '5', '6', '*'],
-      ['1', '2', '3', '-'],
-      ['0', '.', '=', '+'],
-    ];
-
     return Scaffold(
-      appBar: AppBar(title: Text('Calculator')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                alignment: Alignment.bottomRight,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  display,
-                  style: TextStyle(fontSize: 40, color: Colors.greenAccent),
-                  maxLines: 2,
-                ),
-              ),
+      appBar: AppBar(
+        title: Text('Prank Calculator'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+            child: Text(
+              displayText,
+              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            for (var row in buttonList)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: row.map((text) {
-                  if (text == '=') {
-                    return buildButton(text, prankResult);
-                  } else {
-                    return buildButton(text, () => append(text));
-                  }
-                }).toList(),
-              ),
-            SizedBox(height: 10),
-            buildButton('Clear', clear),
-          ],
-        ),
+          ),
+          Row(
+            children: [
+              buildButton('7'),
+              buildButton('8'),
+              buildButton('9'),
+            ],
+          ),
+          Row(
+            children: [
+              buildButton('4'),
+              buildButton('5'),
+              buildButton('6'),
+            ],
+          ),
+          Row(
+            children: [
+              buildButton('1'),
+              buildButton('2'),
+              buildButton('3'),
+            ],
+          ),
+          Row(
+            children: [
+              buildButton('0'),
+              buildButton('C'),
+              buildButton('='),
+            ],
+          ),
+        ],
       ),
     );
   }
